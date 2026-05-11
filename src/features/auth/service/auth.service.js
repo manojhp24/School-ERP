@@ -8,10 +8,23 @@ import {
   findUserByEmail,
   createUser,
 } from "../repositories/auth.repository.js";
+import {
+  loginValidationSchema,
+  registerValidationSchema,
+} from "../validations/auth.validaton.js";
 
 const registerUser = async (data) => {
   const { name, email, password, role } = data;
-  const existingUser = await User.findOne({ email });
+  const { error } = registerValidationSchema.validate(data);
+  const existingUser = await findUserByEmail(email);
+
+  if (error) {
+    throw new ApiError(
+      400,
+      "Validation Error",
+      error.details.map((detail) => detail.message)
+    );
+  }
 
   if (existingUser) {
     throw new ApiError(409, "User already exists", [
@@ -33,8 +46,17 @@ const registerUser = async (data) => {
 
 const loginUser = async (data) => {
   const { email, password } = data;
+  const { error } = loginValidationSchema.validate(data);
 
-  const user = await findUserByEmail({ email });
+  if (error) {
+    throw new ApiError(
+      400,
+      "Validation Error",
+      error.details.map((detail) => detail.message)
+    );
+  }
+
+  const user = await findUserByEmail(email);
 
   if (!user) {
     throw new ApiError(401, "Invalid credential", ["Email not registerd!!"]);
@@ -57,7 +79,7 @@ const loginUser = async (data) => {
     }
   );
 
-  return { token };
+  return { token, tokertype: "Bearer", user: user };
 };
 
 export { registerUser, loginUser };
