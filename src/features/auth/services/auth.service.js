@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-import { User } from "../models/user.model.js";
+import { AUTH_MESSAGES } from "../../../shared/constants/auth_message.js";
 import { ApiError } from "../../../utils/ApiError.js";
 import { userResponseDto } from "../dto/user.dto.js";
 import {
@@ -11,7 +11,9 @@ import {
 import {
   loginValidationSchema,
   registerValidationSchema,
-} from "../validations/auth.validaton.js";
+} from "../validations/auth.validation.js";
+import { HTTP_STATUS } from "../../../shared/statusCodes.js";
+import { ERROR_CODES } from "../../../shared/constants/errorCodes.js";
 
 const registerUser = async (data) => {
   const { name, email, password, role } = data;
@@ -20,16 +22,20 @@ const registerUser = async (data) => {
 
   if (error) {
     throw new ApiError(
-      400,
-      "Validation Error",
-      error.details.map((detail) => detail.message)
+      HTTP_STATUS.BAD_REQUEST,
+      AUTH_MESSAGES.VALIDATION_ERROR,
+      error.details.map((detail) => detail.message),
+      ERROR_CODES.INVALID_INPUT
     );
   }
 
   if (existingUser) {
-    throw new ApiError(409, "User already exists", [
-      "Email already registered",
-    ]);
+    throw new ApiError(
+      HTTP_STATUS.CONFLICT,
+      AUTH_MESSAGES.USER_ALREADY_EXISTS,
+      [],
+      ERROR_CODES.USER_ALREADY_EXISTS
+    );
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -50,22 +56,33 @@ const loginUser = async (data) => {
 
   if (error) {
     throw new ApiError(
-      400,
-      "Validation Error",
-      error.details.map((detail) => detail.message)
+      HTTP_STATUS.BAD_REQUEST,
+      AUTH_MESSAGES.VALIDATION_ERROR,
+      error.details.map((detail) => detail.message),
+      ERROR_CODES.INVALID_INPUT
     );
   }
 
   const user = await findUserByEmail(email);
 
   if (!user) {
-    throw new ApiError(401, "Invalid credential", ["Email not registerd!!"]);
+    throw new ApiError(
+      HTTP_STATUS.UNAUTHORIZED,
+      AUTH_MESSAGES.INVALID_CREDENTIALS,
+      [],
+      ERROR_CODES.INVALID_CREDENTIALS
+    );
   }
 
   const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
   if (!isPasswordCorrect) {
-    throw new ApiError(401, "Invalid Credentials", ["Password not correct"]);
+    throw new ApiError(
+      HTTP_STATUS.UNAUTHORIZED,
+      AUTH_MESSAGES.INVALID_CREDENTIALS,
+      [],
+      ERROR_CODES.INVALID_CREDENTIALS
+    );
   }
 
   const token = jwt.sign(
@@ -79,7 +96,11 @@ const loginUser = async (data) => {
     }
   );
 
-  return { token, tokertype: "Bearer", user: user };
+  return {
+    token,
+    tokenType: "bearer",
+    user: userResponseDto(user),
+  };
 };
 
 export { registerUser, loginUser };

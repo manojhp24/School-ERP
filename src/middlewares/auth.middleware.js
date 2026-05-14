@@ -2,12 +2,22 @@ import jwt from "jsonwebtoken";
 
 import { ApiError } from "../utils/ApiError.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
+import { AUTH_MESSAGES } from "../shared/constants/auth_message.js";
+import { HTTP_STATUS } from "../shared/statusCodes.js";
+import { ERROR_CODES } from "../shared/constants/errorCodes.js";
 
 const authMiddleWare = asyncHandler(async (req, res, next) => {
   const authHeader = req.headers.authorization;
 
+  console.log(authHeader);
+
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    throw new ApiError(401, "Unauthorized access");
+    throw new ApiError(
+      HTTP_STATUS.UNAUTHORIZED,
+      AUTH_MESSAGES.UNAUTHORIZED_ACCESS,
+      [],
+      ERROR_CODES.UNAUTHORIZED_ACCESS
+    );
   }
 
   const token = authHeader.split(" ")[1];
@@ -17,7 +27,12 @@ const authMiddleWare = asyncHandler(async (req, res, next) => {
 
     req.user = decoded;
   } catch (error) {
-    throw new ApiError(401, "Invalid or expired token");
+    throw new ApiError(
+      HTTP_STATUS.UNAUTHORIZED,
+      AUTH_MESSAGES.TOKEN_INVALID,
+      [],
+      ERROR_CODES.TOKEN_EXPIRED
+    );
   }
 
   next();
