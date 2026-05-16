@@ -1,6 +1,8 @@
 import { Router } from "express";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import authRoutes from "../features/auth/routes/auth.routes.js";
+import studentRoutes from "../features/student/routes/student.routes.js";
+import admissionRoutes from "../features/student/routes/admission.route.js";
 
 const router = Router();
 
@@ -13,5 +15,7 @@ router.get("/health-check", (req, res) => {
 });
 
 router.use("/auth", authRoutes);
+router.use("/students", studentRoutes);
+router.use("/admissions", admissionRoutes);
 
 export default router;

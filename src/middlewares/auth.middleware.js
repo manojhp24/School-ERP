@@ -9,8 +9,6 @@ import { ERROR_CODES } from "../shared/constants/errorCodes.js";
 const authMiddleWare = asyncHandler(async (req, res, next) => {
   const authHeader = req.headers.authorization;
 
-  console.log(authHeader);
-
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     throw new ApiError(
       HTTP_STATUS.UNAUTHORIZED,
