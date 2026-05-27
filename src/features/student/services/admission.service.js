@@ -10,6 +10,7 @@ import {
   createAdmission,
   getAllAdmissions,
   findAdmissionByNumber,
+  getAdmissionByStudentId,
 } from "../repositories/admission.repository.js";
 
 import { getStudentById } from "../repositories/student.repository.js";
@@ -44,4 +45,19 @@ const getAllAdmissionsService = async () => {
   return await getAllAdmissions();
 };
 
-export { createAdmissionService, getAllAdmissionsService };
+const getAdmissionByStudentIdService = async (studentId) => {
+  const admissionData = await getAdmissionByStudentId(studentId);
+  if (!admissionData) {
+    throw new ApiError(
+      HTTP_STATUS.NOT_FOUND,
+      "Student admission Data not found"
+    );
+  }
+  return admissionData;
+};
+
+export {
+  createAdmissionService,
+  getAllAdmissionsService,
+  getAdmissionByStudentIdService,
+};

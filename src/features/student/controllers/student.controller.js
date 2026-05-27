@@ -7,6 +7,7 @@ import {
   deleteStudentService,
   restoreStudentService,
   updateStudentAdmissionService,
+  getStudentByIdService,
 } from "../services/student.service.js";
 
 const studentAdmission = asyncHandler(async (req, res) => {
@@ -14,7 +15,7 @@ const studentAdmission = asyncHandler(async (req, res) => {
 
   return res
     .status(201)
-    .json(new ApiResponse(201, result, "Student Admitted succesfully"));
+    .json(new ApiResponse(201, result, "Student Admitted successfully"));
 });
 
 const getAllStudents = asyncHandler(async (req, res) => {
@@ -23,6 +24,15 @@ const getAllStudents = asyncHandler(async (req, res) => {
   return res
     .status(201)
     .json(new ApiResponse(201, students, "Students fetched successfully."));
+});
+
+const getStudentProfile = asyncHandler(async (req, res) => {
+  const { studentId } = req.params;
+  const student = await getStudentByIdService(studentId);
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, student, "Student fetched successfully"));
 });
 
 const updateStudent = asyncHandler(async (req, res) => {
@@ -67,4 +77,5 @@ export {
   deleteStudent,
   restoreStudent,
   updateStudent,
+  getStudentProfile,
 };

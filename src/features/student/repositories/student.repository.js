@@ -15,7 +15,7 @@ const getAllStudents = async () => {
 };
 
 const getStudentById = async (studentId) => {
-  return await Student.findOne({ _id: studentId, isDeleted: false });
+  return await Student.findOne({ _id: studentId });
 };
 
 const getStudentBySatsNumber = async (satsNumber) => {

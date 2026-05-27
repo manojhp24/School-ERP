@@ -2,6 +2,7 @@ import { ApiError } from "../../../utils/ApiError.js";
 import { HTTP_STATUS } from "../../../shared/statusCodes.js";
 import { ERROR_CODES } from "../../../shared/constants/errorCodes.js";
 import { createStudentValidation } from "../validations/stduent.validation.js";
+import { createAdmissionValidation } from "../validations/admission.validation.js";
 import {
   createStudent,
   getAllStudents,
@@ -13,16 +14,28 @@ import {
 } from "../repositories/student.repository.js";
 import { createAdmission } from "../repositories/admission.repository.js";
 import { updateAdmissionByStudentId } from "../repositories/admission.repository.js";
+import { getAdmissionByStudentIdService } from "../services/admission.service.js";
 
 const createStudentService = async (data) => {
   const { student, admission } = data;
-  const { error } = createStudentValidation.validate(student);
+  const studentValidation = createStudentValidation.validate(student);
 
-  if (error) {
+  if (studentValidation.error) {
     throw new ApiError(
       HTTP_STATUS.BAD_REQUEST,
-      "Validation failed",
-      error.details.map((detail) => detail.message),
+      "Student validation failed",
+      studentValidation.error.details.map((detail) => detail.message),
+      ERROR_CODES.VALIDATION_FAILED
+    );
+  }
+
+  const admissionValidation = createAdmissionValidation.validate(admission);
+
+  if (admissionValidation.error) {
+    throw new ApiError(
+      HTTP_STATUS.BAD_REQUEST,
+      "Admission validation failed",
+      admissionValidation.error.details.map((detail) => detail.message),
       ERROR_CODES.VALIDATION_FAILED
     );
   }
@@ -54,6 +67,20 @@ const createStudentService = async (data) => {
 
 const getAllStudentService = async () => {
   return await getAllStudents();
+};
+
+const getStudentByIdService = async (studentId) => {
+  const student = await getStudentById(studentId);
+  if (!student) {
+    throw new ApiError(
+      HTTP_STATUS.NOT_FOUND,
+      "Student not found",
+      [],
+      ERROR_CODES.RESOURCE_NOT_FOUND
+    );
+  }
+  const admission = await getAdmissionByStudentIdService(studentId);
+  return { student, admission };
 };
 
 const updateStudentAdmissionService = async (studentId, data) => {
@@ -93,6 +120,7 @@ const deleteStudentService = async (studentId) => {
 
 const restoreStudentService = async (studentId) => {
   const student = await getStudentById(studentId);
+  console.log(studentId);
 
   if (!student) {
     throw new ApiError(HTTP_STATUS.NOT_FOUND, "Student not found");
@@ -107,4 +135,5 @@ export {
   deleteStudentService,
   restoreStudentService,
   updateStudentAdmissionService,
+  getStudentByIdService,
 };

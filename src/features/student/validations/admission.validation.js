@@ -1,10 +1,7 @@
 import Joi from "joi";
 
 export const createAdmissionValidation = Joi.object({
-  studentId: Joi.string().required().messages({
-    "string.empty": "Student ID is required.",
-    "any.required": "Student ID is required.",
-  }),
+  studentId: Joi.string(),
 
   admissionNumber: Joi.string().trim().uppercase().required().messages({
     "string.empty": "Admission number is required.",

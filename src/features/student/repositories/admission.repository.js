@@ -10,6 +10,13 @@ const getAllAdmissions = async () => {
     .sort({ createdAt: -1 });
 };
 
+const getAdmissionByStudentId = async (studentId) => {
+  return await Admission.findOne({
+    studentId,
+    isDeleted: false,
+  });
+};
+
 const getAdmissionById = async (admissionId) => {
   return await Admission.findOne({
     _id: admissionId,
@@ -59,4 +66,5 @@ export {
   updateAdmissionByStudentId,
   deleteAdmissionById,
   findAdmissionByNumber,
+  getAdmissionByStudentId,
 };

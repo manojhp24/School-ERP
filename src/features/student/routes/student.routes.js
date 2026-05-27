@@ -6,6 +6,7 @@ import {
   deleteStudent,
   restoreStudent,
   updateStudent,
+  getStudentProfile,
 } from "../controllers/student.controller.js";
 import { authMiddleWare } from "../../../middlewares/auth.middleware.js";
 import { authorizedRoles } from "../../../middlewares/role.middleware.js";
@@ -24,6 +25,13 @@ studentRouter.get(
   authMiddleWare,
   authorizedRoles("admin", "parent"),
   getAllStudents
+);
+
+studentRouter.get(
+  "/:studentId",
+  authMiddleWare,
+  authorizedRoles("admin"),
+  getStudentProfile
 );
 
 studentRouter.patch(

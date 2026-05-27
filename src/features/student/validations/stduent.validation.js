@@ -7,7 +7,6 @@ export const createStudentValidation = Joi.object({
     .messages({ "string.empty": "Firstname is required" }),
   lastName: Joi.string()
     .trim()
-    .required()
     .messages({ "string.empty": "Lastname is required" }),
   satsNumber: Joi.string()
     .trim()
