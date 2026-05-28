@@ -8,7 +8,7 @@ import {
   restoreStudentService,
   updateStudentAdmissionService,
   getStudentByIdService,
-} from "../services/student.service.js";
+} from "../services/index.js";
 
 const studentAdmission = asyncHandler(async (req, res) => {
   const result = await createStudentService(req.body);

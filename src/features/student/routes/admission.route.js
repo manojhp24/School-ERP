@@ -1,8 +1,7 @@
 import express from "express";
 
 import { createAdmission } from "../controllers/admission.controller.js";
-import { authMiddleWare } from "../../../middlewares/auth.middleware.js";
-import { authorizedRoles } from "../../../middlewares/role.middleware.js";
+import { authMiddleWare, authorizedRoles } from "../../../middlewares/index.js";
 
 const admissionRouter = express.Router();
 

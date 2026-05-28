@@ -7,9 +7,8 @@ import {
   restoreStudent,
   updateStudent,
   getStudentProfile,
-} from "../controllers/student.controller.js";
-import { authMiddleWare } from "../../../middlewares/auth.middleware.js";
-import { authorizedRoles } from "../../../middlewares/role.middleware.js";
+} from "../controllers/index.js";
+import { authMiddleWare, authorizedRoles } from "../../../middlewares/index.js";
 
 const studentRouter = express.Router();
 

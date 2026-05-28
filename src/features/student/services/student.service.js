@@ -1,8 +1,10 @@
 import { ApiError } from "../../../utils/ApiError.js";
 import { HTTP_STATUS } from "../../../shared/statusCodes.js";
 import { ERROR_CODES } from "../../../shared/constants/errorCodes.js";
-import { createStudentValidation } from "../validations/stduent.validation.js";
-import { createAdmissionValidation } from "../validations/admission.validation.js";
+import {
+  createStudentValidation,
+  createAdmissionValidation,
+} from "../validations/index.js";
 import {
   createStudent,
   getAllStudents,
@@ -11,10 +13,10 @@ import {
   deleteByStudentId,
   getStudentBySatsNumber,
   restoreByStudentId,
-} from "../repositories/student.repository.js";
-import { createAdmission } from "../repositories/admission.repository.js";
-import { updateAdmissionByStudentId } from "../repositories/admission.repository.js";
-import { getAdmissionByStudentIdService } from "../services/admission.service.js";
+  createAdmission,
+  updateAdmissionByStudentId,
+} from "../repositories/index.js";
+import { getAdmissionByStudentIdService } from "../services/index.js";
 
 const createStudentService = async (data) => {
   const { student, admission } = data;

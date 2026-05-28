@@ -1,7 +1,7 @@
 import { ApiResponse } from "../../../utils/ApiResponse.js";
 
 import { asyncHandler } from "../../../utils/asyncHandler.js";
-import { createAdmissionService } from "../services/admission.service.js";
+import { createAdmissionService } from "../services/index.js";
 
 const createAdmission = asyncHandler(async (req, res) => {
   const admission = await createAdmissionService(req.body);

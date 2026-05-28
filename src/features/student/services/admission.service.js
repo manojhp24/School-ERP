@@ -11,7 +11,7 @@ import {
   getAllAdmissions,
   findAdmissionByNumber,
   getAdmissionByStudentId,
-} from "../repositories/admission.repository.js";
+} from "../repositories/index.js";
 
 import { getStudentById } from "../repositories/student.repository.js";
 
