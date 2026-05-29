@@ -11,10 +11,14 @@ import {
   getStudentBySatsNumber,
   restoreByStudentId,
 } from "../repositories/student.repository.js";
-import { createAdmission } from "../repositories/admission.repository.js";
+import {
+  createAdmission,
+  getAdmissionByStudentId,
+} from "../repositories/admission.repository.js";
 import { updateAdmissionByStudentId } from "../repositories/admission.repository.js";
+import uploadToCloudinary from "../../../utils/uploadToCloudinary.js";
 
-const createStudentService = async (data) => {
+const createStudentService = async (data, file) => {
   const { student, admission } = data;
   const { error } = createStudentValidation.validate(student);
 
@@ -38,6 +42,11 @@ const createStudentService = async (data) => {
     );
   }
 
+  if (file) {
+    const uploadedImage = await uploadToCloudinary(file.buffer);
+    student.personalDetails.studentImage = uploadedImage.secure_url;
+  }
+
   const createdStudent = await createStudent(student);
 
   const createdAdmission = await createAdmission({
@@ -54,6 +63,15 @@ const createStudentService = async (data) => {
 
 const getAllStudentService = async () => {
   return await getAllStudents();
+};
+
+const getStudentProfileService = async (studentId) => {
+  const student = await getStudentById(studentId);
+  const admission = await getAdmissionByStudentId(studentId);
+  return {
+    student,
+    admission,
+  };
 };
 
 const updateStudentAdmissionService = async (studentId, data) => {
@@ -107,4 +125,5 @@ export {
   deleteStudentService,
   restoreStudentService,
   updateStudentAdmissionService,
+  getStudentProfileService,
 };

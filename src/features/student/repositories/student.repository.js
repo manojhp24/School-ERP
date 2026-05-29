@@ -5,17 +5,13 @@ const createStudent = async (student) => {
 };
 
 const getAllStudents = async () => {
-  return await Student.find({
-    isDeleted: false,
-  })
-    .lean()
-    .sort({
-      createdAt: -1,
-    });
+  return await Student.find().lean().sort({
+    createdAt: -1,
+  });
 };
 
 const getStudentById = async (studentId) => {
-  return await Student.findOne({ _id: studentId, isDeleted: false });
+  return await Student.findOne({ _id: studentId });
 };
 
 const getStudentBySatsNumber = async (satsNumber) => {

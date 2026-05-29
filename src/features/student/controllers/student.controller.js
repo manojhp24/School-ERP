@@ -7,14 +7,16 @@ import {
   deleteStudentService,
   restoreStudentService,
   updateStudentAdmissionService,
+  getStudentProfileService,
 } from "../services/student.service.js";
 
 const studentAdmission = asyncHandler(async (req, res) => {
-  const result = await createStudentService(req.body);
+  const payload = JSON.parse(req.body.student);
+  const result = await createStudentService(payload, req.file);
 
   return res
     .status(201)
-    .json(new ApiResponse(201, result, "Student Admitted succesfully"));
+    .json(new ApiResponse(201, result, "Student Admitted successfully"));
 });
 
 const getAllStudents = asyncHandler(async (req, res) => {
@@ -23,6 +25,14 @@ const getAllStudents = asyncHandler(async (req, res) => {
   return res
     .status(201)
     .json(new ApiResponse(201, students, "Students fetched successfully."));
+});
+
+const getStudentProfileById = asyncHandler(async (req, res) => {
+  const { studentId } = req.params;
+  const student = await getStudentProfileService(studentId);
+  return res
+    .status(201)
+    .json(new ApiResponse(201, student, "Student fetched successfully."));
 });
 
 const updateStudent = asyncHandler(async (req, res) => {
@@ -67,4 +77,5 @@ export {
   deleteStudent,
   restoreStudent,
   updateStudent,
+  getStudentProfileById,
 };
