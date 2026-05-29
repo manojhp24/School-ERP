@@ -12,16 +12,8 @@ const getAllAdmissions = async () => {
 
 const getAdmissionByStudentId = async (studentId) => {
   return await Admission.findOne({
-    studentId,
-    isDeleted: false,
+    studentId: studentId,
   });
-};
-
-const getAdmissionById = async (admissionId) => {
-  return await Admission.findOne({
-    _id: admissionId,
-    isDeleted: false,
-  }).populate("studentId");
 };
 
 const updateAdmissionByStudentId = async (studentId, data) => {
@@ -62,7 +54,7 @@ const findAdmissionByNumber = async (admissionNumber) => {
 export {
   createAdmission,
   getAllAdmissions,
-  getAdmissionById,
+  getAdmissionByStudentId,
   updateAdmissionByStudentId,
   deleteAdmissionById,
   findAdmissionByNumber,

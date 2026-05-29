@@ -7,11 +7,12 @@ import {
   deleteStudentService,
   restoreStudentService,
   updateStudentAdmissionService,
-  getStudentByIdService,
-} from "../services/index.js";
+  getStudentProfileService,
+} from "../services/student.service.js";
 
 const studentAdmission = asyncHandler(async (req, res) => {
-  const result = await createStudentService(req.body);
+  const payload = JSON.parse(req.body.student);
+  const result = await createStudentService(payload, req.file);
 
   return res
     .status(201)
@@ -26,13 +27,12 @@ const getAllStudents = asyncHandler(async (req, res) => {
     .json(new ApiResponse(201, students, "Students fetched successfully."));
 });
 
-const getStudentProfile = asyncHandler(async (req, res) => {
+const getStudentProfileById = asyncHandler(async (req, res) => {
   const { studentId } = req.params;
-  const student = await getStudentByIdService(studentId);
-
+  const student = await getStudentProfileService(studentId);
   return res
-    .status(200)
-    .json(new ApiResponse(200, student, "Student fetched successfully"));
+    .status(201)
+    .json(new ApiResponse(201, student, "Student fetched successfully."));
 });
 
 const updateStudent = asyncHandler(async (req, res) => {
@@ -77,5 +77,5 @@ export {
   deleteStudent,
   restoreStudent,
   updateStudent,
-  getStudentProfile,
+  getStudentProfileById,
 };

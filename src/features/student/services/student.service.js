@@ -13,12 +13,15 @@ import {
   deleteByStudentId,
   getStudentBySatsNumber,
   restoreByStudentId,
+} from "../repositories/student.repository.js";
+import {
   createAdmission,
-  updateAdmissionByStudentId,
-} from "../repositories/index.js";
-import { getAdmissionByStudentIdService } from "../services/index.js";
+  getAdmissionByStudentId,
+} from "../repositories/admission.repository.js";
+import { updateAdmissionByStudentId } from "../repositories/admission.repository.js";
+import uploadToCloudinary from "../../../utils/uploadToCloudinary.js";
 
-const createStudentService = async (data) => {
+const createStudentService = async (data, file) => {
   const { student, admission } = data;
   const studentValidation = createStudentValidation.validate(student);
 
@@ -53,6 +56,11 @@ const createStudentService = async (data) => {
     );
   }
 
+  if (file) {
+    const uploadedImage = await uploadToCloudinary(file.buffer);
+    student.personalDetails.studentImage = uploadedImage.secure_url;
+  }
+
   const createdStudent = await createStudent(student);
 
   const createdAdmission = await createAdmission({
@@ -71,18 +79,13 @@ const getAllStudentService = async () => {
   return await getAllStudents();
 };
 
-const getStudentByIdService = async (studentId) => {
+const getStudentProfileService = async (studentId) => {
   const student = await getStudentById(studentId);
-  if (!student) {
-    throw new ApiError(
-      HTTP_STATUS.NOT_FOUND,
-      "Student not found",
-      [],
-      ERROR_CODES.RESOURCE_NOT_FOUND
-    );
-  }
-  const admission = await getAdmissionByStudentIdService(studentId);
-  return { student, admission };
+  const admission = await getAdmissionByStudentId(studentId);
+  return {
+    student,
+    admission,
+  };
 };
 
 const updateStudentAdmissionService = async (studentId, data) => {
@@ -137,5 +140,5 @@ export {
   deleteStudentService,
   restoreStudentService,
   updateStudentAdmissionService,
-  getStudentByIdService,
+  getStudentProfileService,
 };

@@ -6,9 +6,11 @@ import {
   deleteStudent,
   restoreStudent,
   updateStudent,
-  getStudentProfile,
-} from "../controllers/index.js";
-import { authMiddleWare, authorizedRoles } from "../../../middlewares/index.js";
+  getStudentProfileById,
+} from "../controllers/student.controller.js";
+import { authMiddleWare } from "../../../middlewares/auth.middleware.js";
+import { authorizedRoles } from "../../../middlewares/role.middleware.js";
+import { upload } from "../../../middlewares/upload.middleware.js";
 
 const studentRouter = express.Router();
 
@@ -16,6 +18,7 @@ studentRouter.post(
   "/student-admission",
   authMiddleWare,
   authorizedRoles("admin"),
+  upload.single("studentImage"),
   studentAdmission
 );
 
@@ -24,6 +27,12 @@ studentRouter.get(
   authMiddleWare,
   authorizedRoles("admin", "parent"),
   getAllStudents
+);
+studentRouter.get(
+  "/:studentId",
+  authMiddleWare,
+  authorizedRoles("admin", "parent"),
+  getStudentProfileById
 );
 
 studentRouter.get(
